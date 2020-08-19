@@ -25,7 +25,7 @@ static int size = 64;
 extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 
-void Test12(float percent)
+void Test12(int d)
 {
 	const int n = 4 * 3;
 	const int count = 3741 / 3;
@@ -54,8 +54,8 @@ void Test12(float percent)
 
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc(&sh_data, n);
-	SHBuild(&sh_data, data_set, count, percent);
+	SHAlloc(&sh_data, n, d);
+	SHBuild(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -107,7 +107,7 @@ void Test12(float percent)
 	return;
 }
 
-void Test12_DC(float percent)
+void Test12_DC(int d)
 {
 	const int n = 3 * 3;
 	const int count = 3741 / 3;
@@ -141,8 +141,8 @@ void Test12_DC(float percent)
 
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc(&sh_data, n);
-	SHBuild(&sh_data, data_set, count, percent);
+	SHAlloc(&sh_data, n, d);
+	SHBuild(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -212,7 +212,7 @@ void Test12_DC(float percent)
 	return;
 }
 
-void Test27(float percent)
+void Test27(int d)
 {
 	const int n = 9 * 3;
 	const int count = 3741 / 3;
@@ -241,8 +241,8 @@ void Test27(float percent)
 
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc(&sh_data, n);
-	SHBuild(&sh_data, data_set, count, percent);
+	SHAlloc(&sh_data, n, d);
+	SHBuild(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -294,7 +294,7 @@ void Test27(float percent)
 	return;
 }
 
-void Test27_DC(float percent)
+void Test27_DC(int d)
 {
 	const int n = 8 * 3;
 	const int count = 3741 / 3;
@@ -328,8 +328,8 @@ void Test27_DC(float percent)
 
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc(&sh_data, n);
-	SHBuild(&sh_data, data_set, count, percent);
+	SHAlloc(&sh_data, n, d);
+	SHBuild(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -409,10 +409,10 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12(0.9f);
-	Test27(0.9f);
-	Test12_DC(0.8f);
-	Test27_DC(0.8f);
+//	Test12(3);
+//	Test27(5);
+//	Test12_DC(3);
+	Test27_DC(5);
 
 	return 0;
 }

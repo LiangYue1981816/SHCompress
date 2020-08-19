@@ -16,9 +16,9 @@ extern void** AllocMatrix(int nrows, int ncols, int nsize);
 extern void FreeMatrix(void **pmatrix);
 
 extern void SHInit(SHData *sh_data);
-extern void SHAlloc(SHData *sh_data, int n);
+extern void SHAlloc(SHData *sh_data, int n, int d);
 extern void SHFree(SHData *sh_data);
 
-extern int SHBuild(SHData *sh_data, float **data_set, int count, float percent);
+extern int SHBuild(SHData *sh_data, float **data_set, int count);
 extern int SHCompress(SHData *sh_data, float *uncompress_data, float *compress_data);
 extern int SHUncompress(SHData *sh_data, float *compress_data, float *uncompress_data);
