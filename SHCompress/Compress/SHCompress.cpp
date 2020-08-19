@@ -445,7 +445,7 @@ void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 	dc[2] = compress_data[2];
 
 	for (int i = 0; i < sh_data->D; i++) {
-		compress_temp_data[3 + i] = compress_data[i];
+		compress_temp_data[i] = compress_data[3 + i];
 	}
 
 	uncompress(sh_data->mean, sh_data->eigvec, compress_temp_data, sh_data->N, sh_data->D, source_temp_data);
