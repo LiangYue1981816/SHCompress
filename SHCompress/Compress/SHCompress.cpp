@@ -367,13 +367,22 @@ void SHInit(SHData *sh_data)
 	sh_data->eigvec = NULL;
 }
 
-void SHAlloc(SHData *sh_data, int n, int d)
+void SHAlloc2(SHData *sh_data, int d)
 {
 	sh_data->D = d;
-	sh_data->N = n;
-	sh_data->mean = (float *)calloc(n, sizeof(float));
-	sh_data->eigval = (float *)calloc(n, sizeof(float));
-	sh_data->eigvec = (float **)alloc_matrix(n, n, sizeof(float));
+	sh_data->N = 9;
+	sh_data->mean = (float *)calloc(9, sizeof(float));
+	sh_data->eigval = (float *)calloc(9, sizeof(float));
+	sh_data->eigvec = (float **)alloc_matrix(9, 9, sizeof(float));
+}
+
+void SHAlloc3(SHData *sh_data, int d)
+{
+	sh_data->D = d;
+	sh_data->N = 24;
+	sh_data->mean = (float *)calloc(24, sizeof(float));
+	sh_data->eigval = (float *)calloc(24, sizeof(float));
+	sh_data->eigvec = (float **)alloc_matrix(24, 24, sizeof(float));
 }
 
 void SHFree(SHData *sh_data)
@@ -406,4 +415,14 @@ void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
 void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 {
 	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, sh_data->D, source_data);
+}
+
+void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
+{
+
+}
+
+void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
+{
+
 }
