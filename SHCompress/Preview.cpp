@@ -592,17 +592,14 @@ static gli::texture2d Preview(const gli::texture_cube &cube)
 	return texture;
 }
 
-void Preview4(const char *szFileName, float *sh_red, float *sh_grn, float *sh_blu)
+void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size)
 {
-	gli::texture_cube texture(gli::FORMAT_RGB32_SFLOAT_PACK32, gli::extent2d(64, 64));
+	gli::texture_cube texture(gli::FORMAT_RGB32_SFLOAT_PACK32, gli::extent2d(size, size));
 	RenderIrradianceMap4(texture, sh_red, sh_grn, sh_blu);
 	gli::texture2d preview = Preview(texture);
 
-	IMAGE image;
-	IMAGE_ZeroImage(&image);
-	IMAGE_AllocImage(&image, preview.extent().x, preview.extent().y, 24);
-	for (int y = 0; y < IMAGE_HEIGHT(&image); y++) {
-		for (int x = 0; x < IMAGE_WIDTH(&image); x++) {
+	for (int y = 0; y < IMAGE_HEIGHT(pImage); y++) {
+		for (int x = 0; x < IMAGE_WIDTH(pImage); x++) {
 			glm::f32vec3 color = GetTexturePixelColor(preview, x, y);
 
 			int r = (int)(color.r * 255 + 0.5f);
@@ -615,24 +612,19 @@ void Preview4(const char *szFileName, float *sh_red, float *sh_grn, float *sh_bl
 			if (g > 255) g = 255;
 			if (b > 255) b = 255;
 
-			IMAGE_SetPixelColor(&image, x, y, RGB(r, g, b));
+			IMAGE_SetPixelColor(pImage, x, y, RGB(r, g, b));
 		}
 	}
-	IMAGE_SaveJpg((char * const)szFileName, &image, 80);
-	IMAGE_FreeImage(&image);
 }
 
-void Preview9(const char *szFileName, float *sh_red, float *sh_grn, float *sh_blu)
+void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size)
 {
-	gli::texture_cube texture(gli::FORMAT_RGB32_SFLOAT_PACK32, gli::extent2d(64, 64));
+	gli::texture_cube texture(gli::FORMAT_RGB32_SFLOAT_PACK32, gli::extent2d(size, size));
 	RenderIrradianceMap9(texture, sh_red, sh_grn, sh_blu);
 	gli::texture2d preview = Preview(texture);
 
-	IMAGE image;
-	IMAGE_ZeroImage(&image);
-	IMAGE_AllocImage(&image, preview.extent().x, preview.extent().y, 24);
-	for (int y = 0; y < IMAGE_HEIGHT(&image); y++) {
-		for (int x = 0; x < IMAGE_WIDTH(&image); x++) {
+	for (int y = 0; y < IMAGE_HEIGHT(pImage); y++) {
+		for (int x = 0; x < IMAGE_WIDTH(pImage); x++) {
 			glm::f32vec3 color = GetTexturePixelColor(preview, x, y);
 
 			int r = (int)(color.r * 255 + 0.5f);
@@ -645,9 +637,7 @@ void Preview9(const char *szFileName, float *sh_red, float *sh_grn, float *sh_bl
 			if (g > 255) g = 255;
 			if (b > 255) b = 255;
 
-			IMAGE_SetPixelColor(&image, x, y, RGB(r, g, b));
+			IMAGE_SetPixelColor(pImage, x, y, RGB(r, g, b));
 		}
 	}
-	IMAGE_SaveJpg((char * const)szFileName, &image, 80);
-	IMAGE_FreeImage(&image);
 }

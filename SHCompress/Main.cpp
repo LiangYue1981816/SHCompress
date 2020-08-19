@@ -5,6 +5,7 @@
 #include "gl/glew.h"
 #include "gl/glut.h"
 
+#include "Image.h"
 #include "SHCompress.h"
 
 #define PI 3.1415926535897932384626433832795f
@@ -20,8 +21,8 @@ extern void freematrix(void **pmatrix);
 }
 #endif
 
-extern void Preview4(const char *szFileName, float *sh_red, float *sh_grn, float *sh_blu);
-extern void Preview9(const char *szFileName, float *sh_red, float *sh_grn, float *sh_blu);
+extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
+extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 
 void Test12(float percent)
 {
@@ -55,6 +56,16 @@ void Test12(float percent)
 	SHAlloc(&sh_data, n);
 	SHBuild(&sh_data, data_set, count, percent);
 
+	IMAGE imgSource;
+	IMAGE imgCompress;
+	IMAGE imgPreview;
+	IMAGE_ZeroImage(&imgSource);
+	IMAGE_ZeroImage(&imgCompress);
+	IMAGE_ZeroImage(&imgPreview);
+	IMAGE_AllocImage(&imgSource, 64 * 4, 64 * 3, 24);
+	IMAGE_AllocImage(&imgCompress, 64 * 4, 64 * 3, 24);
+	IMAGE_AllocImage(&imgPreview, 64 * 4, 64 * 3 * 2, 24);
+
 	for (int index = 0; index < count; index++) {
 		char szFileName[260];
 
@@ -68,18 +79,30 @@ void Test12(float percent)
 
 		printf("Test12 %d/%d\n", index, count);
 
-		sprintf(szFileName, "./Result/%4.4d_0.jpg", index);
-		Preview4(szFileName, &sh_0[0], &sh_0[4], &sh_0[8]);
+		Preview4(&imgSource, &sh_0[0], &sh_0[4], &sh_0[8], 64);
 
 		SHCompress(&sh_data, sh_0, compress);
 		SHUncompress(&sh_data, compress, sh_1);
 
-		sprintf(szFileName, "./Result/%4.4d_12.jpg", index);
-		Preview4(szFileName, &sh_1[0], &sh_1[4], &sh_1[8]);
+		Preview4(&imgCompress, &sh_1[0], &sh_1[4], &sh_1[8], 64);
+
+		IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
+		IMAGE_CopyImageArea(&imgSource, &imgPreview);
+
+		IMAGE_SetImageArea(&imgPreview, 0, IMAGE_HEIGHT(&imgPreview) / 2, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) - 1);
+		IMAGE_CopyImageArea(&imgCompress, &imgPreview);
+
+		sprintf(szFileName, "./Result/%d_2.jpg", index);
+		IMAGE_SaveJpg(szFileName, &imgPreview, 75);
 	}
+
+	IMAGE_FreeImage(&imgSource);
+	IMAGE_FreeImage(&imgCompress);
+	IMAGE_FreeImage(&imgPreview);
 
 	SHFree(&sh_data);
 	FreeMatrix((void **)data_set);
+
 	return;
 }
 
@@ -115,6 +138,16 @@ void Test27(float percent)
 	SHAlloc(&sh_data, n);
 	SHBuild(&sh_data, data_set, count, percent);
 
+	IMAGE imgSource;
+	IMAGE imgCompress;
+	IMAGE imgPreview;
+	IMAGE_ZeroImage(&imgSource);
+	IMAGE_ZeroImage(&imgCompress);
+	IMAGE_ZeroImage(&imgPreview);
+	IMAGE_AllocImage(&imgSource, 64 * 4, 64 * 3, 24);
+	IMAGE_AllocImage(&imgCompress, 64 * 4, 64 * 3, 24);
+	IMAGE_AllocImage(&imgPreview, 64 * 4, 64 * 3 * 2, 24);
+
 	for (int index = 0; index < count; index++) {
 		char szFileName[260];
 
@@ -128,72 +161,31 @@ void Test27(float percent)
 
 		printf("Test12 %d/%d\n", index, count);
 
-		sprintf(szFileName, "./Result/%4.4d_0.jpg", index);
-		Preview9(szFileName, &sh_0[0], &sh_0[9], &sh_0[18]);
+		Preview9(&imgSource, &sh_0[0], &sh_0[9], &sh_0[18], 64);
 
 		SHCompress(&sh_data, sh_0, compress);
 		SHUncompress(&sh_data, compress, sh_1);
 
-		sprintf(szFileName, "./Result/%4.4d_27.jpg", index);
-		Preview9(szFileName, &sh_1[0], &sh_1[9], &sh_1[18]);
+		Preview9(&imgCompress, &sh_1[0], &sh_1[9], &sh_1[18], 64);
+
+		IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
+		IMAGE_CopyImageArea(&imgSource, &imgPreview);
+
+		IMAGE_SetImageArea(&imgPreview, 0, IMAGE_HEIGHT(&imgPreview) / 2, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) - 1);
+		IMAGE_CopyImageArea(&imgCompress, &imgPreview);
+
+		sprintf(szFileName, "./Result/%d_3.jpg", index);
+		IMAGE_SaveJpg(szFileName, &imgPreview, 75);
 	}
+
+	IMAGE_FreeImage(&imgSource);
+	IMAGE_FreeImage(&imgCompress);
+	IMAGE_FreeImage(&imgPreview);
 
 	SHFree(&sh_data);
 	FreeMatrix((void **)data_set);
+
 	return;
-
-	/*
-	const int n = 9 * 3;
-	const int count = 3741 / 3;
-	float **sh_data = (float **)allocmatrix(n, count, sizeof(float));
-
-	if (FILE *pFile = fopen("data9.txt", "rb")) {
-		for (int index = 0; index < count; index++) {
-			for (int i = 0; i < n; i++) {
-				fscanf(pFile, "%f", &sh_data[i][index]);
-				sh_data[i][index] /= PI;
-			}
-		}
-		fclose(pFile);
-	}
-	else {
-		freematrix((void **)sh_data);
-		return;
-	}
-
-	PCAMODEL model;
-	PCA_InitModel(&model);
-	PCA_AllocModel(n, &model);
-	PCA_DataPCA(sh_data, n, count, percent, model.mean, model.eigval, model.eigvec, &model.D);
-//	PCA_DataPCAEx(sh_data, n, count, model.mean, model.eigval, model.eigvec, 4); model.D = 4;
-
-	for (int index = 0; index < count; index++) {
-		char szFileName[260];
-
-		float sh_0[n] = { 0.0f };
-		float sh_1[n] = { 0.0f };
-		float compress[n] = { 0.0f };
-
-		for (int i = 0; i < n; i++) {
-			sh_0[i] = sh_data[i][index];
-		}
-
-		printf("Test27 %d/%d\n", index, count);
-
-		sprintf(szFileName, "./Result/%4.4d_0.jpg", index);
-		Preview9(szFileName, &sh_0[0], &sh_0[9], &sh_0[18]);
-
-		PCA_DataParam(sh_0, model.mean, model.eigvec, model.N, model.D, compress);
-		PCA_DataInvPCA(model.mean, model.eigvec, compress, model.N, model.D, sh_1);
-
-		sprintf(szFileName, "./Result/%4.4d_27.jpg", index);
-		Preview9(szFileName, &sh_1[0], &sh_1[9], &sh_1[18]);
-	}
-
-	PCA_FreeModel(&model);
-	freematrix((void **)sh_data);
-	return;
-	*/
 }
 
 int main(int argc, char **argv)
@@ -206,7 +198,7 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-//	Test12(0.9f);
+	Test12(0.9f);
 	Test27(0.9f);
 
 	return 0;
