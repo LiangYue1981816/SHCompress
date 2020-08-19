@@ -24,7 +24,7 @@ extern void freematrix(void **pmatrix);
 static int size = 64;
 extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
-
+/*
 void Test12(int d)
 {
 	const int n = 4 * 3;
@@ -398,7 +398,7 @@ void Test27_DC(int d)
 
 	return;
 }
-
+*/
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -412,7 +412,7 @@ int main(int argc, char **argv)
 //	Test12(3);
 //	Test27(5);
 //	Test12_DC(3);
-	Test27_DC(5);
+//	Test27_DC(5);
 
 	return 0;
 }
