@@ -21,6 +21,7 @@ extern void freematrix(void **pmatrix);
 }
 #endif
 
+static int size = 64;
 extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 
@@ -62,9 +63,9 @@ void Test12(float percent)
 	IMAGE_ZeroImage(&imgSource);
 	IMAGE_ZeroImage(&imgCompress);
 	IMAGE_ZeroImage(&imgPreview);
-	IMAGE_AllocImage(&imgSource, 64 * 4, 64 * 3, 24);
-	IMAGE_AllocImage(&imgCompress, 64 * 4, 64 * 3, 24);
-	IMAGE_AllocImage(&imgPreview, 64 * 4, 64 * 3 * 2, 24);
+	IMAGE_AllocImage(&imgSource, size * 4, size * 3, 24);
+	IMAGE_AllocImage(&imgCompress, size * 4, size * 3, 24);
+	IMAGE_AllocImage(&imgPreview, size * 4, size * 3 * 2, 24);
 
 	for (int index = 0; index < count; index++) {
 		char szFileName[260];
@@ -79,12 +80,12 @@ void Test12(float percent)
 
 		printf("Test12 %d/%d\n", index, count);
 
-		Preview4(&imgSource, &sh_0[0], &sh_0[4], &sh_0[8], 64);
+		Preview4(&imgSource, &sh_0[0], &sh_0[4], &sh_0[8], size);
 
 		SHCompress(&sh_data, sh_0, compress);
 		SHUncompress(&sh_data, compress, sh_1);
 
-		Preview4(&imgCompress, &sh_1[0], &sh_1[4], &sh_1[8], 64);
+		Preview4(&imgCompress, &sh_1[0], &sh_1[4], &sh_1[8], size);
 
 		IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
 		IMAGE_CopyImageArea(&imgSource, &imgPreview);
@@ -144,9 +145,9 @@ void Test27(float percent)
 	IMAGE_ZeroImage(&imgSource);
 	IMAGE_ZeroImage(&imgCompress);
 	IMAGE_ZeroImage(&imgPreview);
-	IMAGE_AllocImage(&imgSource, 64 * 4, 64 * 3, 24);
-	IMAGE_AllocImage(&imgCompress, 64 * 4, 64 * 3, 24);
-	IMAGE_AllocImage(&imgPreview, 64 * 4, 64 * 3 * 2, 24);
+	IMAGE_AllocImage(&imgSource, size * 4, size * 3, 24);
+	IMAGE_AllocImage(&imgCompress, size * 4, size * 3, 24);
+	IMAGE_AllocImage(&imgPreview, size * 4, size * 3 * 2, 24);
 
 	for (int index = 0; index < count; index++) {
 		char szFileName[260];
@@ -161,12 +162,12 @@ void Test27(float percent)
 
 		printf("Test12 %d/%d\n", index, count);
 
-		Preview9(&imgSource, &sh_0[0], &sh_0[9], &sh_0[18], 64);
+		Preview9(&imgSource, &sh_0[0], &sh_0[9], &sh_0[18], size);
 
 		SHCompress(&sh_data, sh_0, compress);
 		SHUncompress(&sh_data, compress, sh_1);
 
-		Preview9(&imgCompress, &sh_1[0], &sh_1[9], &sh_1[18], 64);
+		Preview9(&imgCompress, &sh_1[0], &sh_1[9], &sh_1[18], size);
 
 		IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
 		IMAGE_CopyImageArea(&imgSource, &imgPreview);
