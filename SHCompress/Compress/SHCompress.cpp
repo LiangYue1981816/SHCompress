@@ -463,10 +463,54 @@ void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 
 void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
 {
+	float dc[3] = { 0.0f };
+	float source_temp_data[24] = { 0.0f };
+	float compress_temp_data[24] = { 0.0f };
 
+	dc[0] = source_data[0];
+	dc[1] = source_data[9];
+	dc[2] = source_data[18];
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 8; j++) {
+			source_temp_data[i * 8 + j] = source_data[i * 9 + j + 1];
+		}
+	}
+
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_temp_data);
+
+	compress_data[0] = dc[0];
+	compress_data[1] = dc[1];
+	compress_data[2] = dc[2];
+
+	for (int i = 0; i < sh_data->D; i++) {
+		compress_data[3 + i] = compress_temp_data[i];
+	}
 }
 
 void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
 {
+	float dc[3] = { 0.0f };
+	float source_temp_data[24] = { 0.0f };
+	float compress_temp_data[24] = { 0.0f };
 
+	dc[0] = compress_data[0];
+	dc[1] = compress_data[1];
+	dc[2] = compress_data[2];
+
+	for (int i = 0; i < sh_data->D; i++) {
+		compress_temp_data[i] = compress_data[3 + i];
+	}
+
+	uncompress(sh_data->mean, sh_data->eigvec, compress_temp_data, sh_data->N, sh_data->D, source_temp_data);
+
+	source_data[0] = dc[0];
+	source_data[9] = dc[1];
+	source_data[18] = dc[2];
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 8; j++) {
+			source_data[i * 9 + j + 1] = source_temp_data[i * 8 + j];
+		}
+	}
 }
