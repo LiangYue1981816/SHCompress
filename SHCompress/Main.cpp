@@ -160,7 +160,7 @@ void Test27(float percent)
 			sh_0[i] = data_set[i][index];
 		}
 
-		printf("Test12 %d/%d\n", index, count);
+		printf("Test27 %d/%d\n", index, count);
 
 		Preview9(&imgSource, &sh_0[0], &sh_0[9], &sh_0[18], size);
 
