@@ -197,7 +197,7 @@ void Test12_DC(float percent)
 		IMAGE_SetImageArea(&imgPreview, 0, IMAGE_HEIGHT(&imgPreview) / 2, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) - 1);
 		IMAGE_CopyImageArea(&imgCompress, &imgPreview);
 
-		sprintf(szFileName, "./Result/%d_2.jpg", index);
+		sprintf(szFileName, "./Result/%d_2_dc.jpg", index);
 		IMAGE_SaveJpg(szFileName, &imgPreview, 75);
 	}
 
@@ -384,7 +384,7 @@ void Test27_DC(float percent)
 		IMAGE_SetImageArea(&imgPreview, 0, IMAGE_HEIGHT(&imgPreview) / 2, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) - 1);
 		IMAGE_CopyImageArea(&imgCompress, &imgPreview);
 
-		sprintf(szFileName, "./Result/%d_3.jpg", index);
+		sprintf(szFileName, "./Result/%d_3_dc.jpg", index);
 		IMAGE_SaveJpg(szFileName, &imgPreview, 75);
 	}
 
@@ -409,10 +409,9 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-//	Test12(0.9f);
-//	Test27(0.9f);
-
-	Test12_DC(0.6f);
+	Test12(0.9f);
+	Test27(0.9f);
+	Test12_DC(0.8f);
 	Test27_DC(0.8f);
 
 	return 0;
