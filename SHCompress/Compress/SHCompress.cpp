@@ -398,12 +398,12 @@ int SHBuild(SHData *sh_data, float **data_set, int count)
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
 
-int SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
+void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
 {
-	return compress(source_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
+	compress(source_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
 }
 
-int SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
+void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 {
-	return uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, sh_data->D, source_data);
+	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, sh_data->D, source_data);
 }

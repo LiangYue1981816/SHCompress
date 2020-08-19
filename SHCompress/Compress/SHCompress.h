@@ -21,5 +21,5 @@ extern void SHFree(SHData *sh_data);
 
 extern int SHBuild(SHData *sh_data, float **data_set, int count);
 
-extern int SHCompress2(SHData *sh_data, float *source_data, float *compress_data);
-extern int SHUncompress2(SHData *sh_data, float *compress_data, float *source_data);
+extern void SHCompress2(SHData *sh_data, float *source_data, float *compress_data);
+extern void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data);
