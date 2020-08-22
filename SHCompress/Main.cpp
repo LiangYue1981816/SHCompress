@@ -25,7 +25,7 @@ static int size = 64;
 extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 
-void Test12(const char* szDataFileName, int d)
+int GetDataCount(const char* szDataFileName)
 {
 	int lines = 0;
 
@@ -42,8 +42,13 @@ void Test12(const char* szDataFileName, int d)
 		fclose(pFile);
 	}
 
+	return lines;
+}
+
+void Test12(const char* szDataFileName, int d)
+{
 	const int n = 3 * 3;
-	const int count = lines / 3;
+	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
@@ -133,23 +138,8 @@ void Test12(const char* szDataFileName, int d)
 
 void Test27(const char* szDataFileName, int d)
 {
-	int lines = 0;
-
-	if (FILE *pFile = fopen(szDataFileName, "rb")) {
-		while (!feof(pFile)) {
-			float data[9] = { 0.0f };
-
-			for (int j = 0; j < 9; j++) {
-				fscanf(pFile, "%f", &data[j]);
-			}
-
-			lines++;
-		}
-		fclose(pFile);
-	}
-
 	const int n = 8 * 3;
-	const int count = lines / 3;
+	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
