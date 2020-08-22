@@ -25,13 +25,13 @@ static int size = 64;
 extern void Preview4(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 extern void Preview9(IMAGE *pImage, float *sh_red, float *sh_grn, float *sh_blu, int size);
 
-void Test12(int d)
+void Test12(const char* szDataFileName, int d)
 {
 	const int n = 3 * 3;
 	const int count = 3741 / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
-	if (FILE *pFile = fopen("data.txt", "rb")) {
+	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
 			for (int i = 0; i < 3; i++) {
 				float data[9] = { 0.0f };
@@ -67,7 +67,7 @@ void Test12(int d)
 	IMAGE_AllocImage(&imgCompress, size * 4, size * 3, 24);
 	IMAGE_AllocImage(&imgPreview, size * 4, size * 3 * 2, 24);
 
-	if (FILE *pFile = fopen("data.txt", "rb")) {
+	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
 			float sh_0[12] = { 0.0f };
 			float sh_1[12] = { 0.0f };
@@ -116,13 +116,13 @@ void Test12(int d)
 	return;
 }
 
-void Test27(int d)
+void Test27(const char* szDataFileName, int d)
 {
 	const int n = 8 * 3;
 	const int count = 3741 / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
-	if (FILE *pFile = fopen("data.txt", "rb")) {
+	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
 			for (int i = 0; i < 3; i++) {
 				float data[9] = { 0.0f };
@@ -158,7 +158,7 @@ void Test27(int d)
 	IMAGE_AllocImage(&imgCompress, size * 4, size * 3, 24);
 	IMAGE_AllocImage(&imgPreview, size * 4, size * 3 * 2, 24);
 
-	if (FILE *pFile = fopen("data.txt", "rb")) {
+	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
 			float sh_0[27] = { 0.0f };
 			float sh_1[27] = { 0.0f };
@@ -217,8 +217,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12(3);
-	Test27(4);
+	Test12("./Data/Data2.txt", 3);
+	Test27("./Data/Data2.txt", 4);
 
 	return 0;
 }
