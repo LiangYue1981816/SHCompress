@@ -237,8 +237,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12("./data/data_rgb.txt", 3);
-	Test27("./data/data_rgb.txt", 4);
+	Test12("./data/data1.txt", 3);
+	Test27("./data/data1.txt", 6);
 
 	return 0;
 }
