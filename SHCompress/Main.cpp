@@ -47,6 +47,7 @@ int GetDataCount(const char* szDataFileName)
 
 void Test12(const char* szDataFileName, int d)
 {
+	/*
 	const int n = 3 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
@@ -134,10 +135,12 @@ void Test12(const char* szDataFileName, int d)
 	FreeMatrix((void **)data_set);
 
 	return;
+	*/
 }
 
 void Test27(const char* szDataFileName, int d)
 {
+	/*
 	const int n = 8 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
@@ -223,8 +226,9 @@ void Test27(const char* szDataFileName, int d)
 
 	SHFree(&sh_data);
 	FreeMatrix((void **)data_set);
-
+	
 	return;
+	*/
 }
 
 int main(int argc, char **argv)
