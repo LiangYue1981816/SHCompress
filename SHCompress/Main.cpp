@@ -105,8 +105,8 @@ void Test12(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress(&sh_data, sh_0, compress);
-			SHUncompress(&sh_data, compress, sh_1);
+			SHCompress2(&sh_data, sh_0, compress);
+			SHUncompress2(&sh_data, compress, sh_1);
 
 			printf("Test12 %d/%d\n", index, count);
 
@@ -196,8 +196,8 @@ void Test27(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress(&sh_data, sh_0, compress);
-			SHUncompress(&sh_data, compress, sh_1);
+			SHCompress3(&sh_data, sh_0, compress);
+			SHUncompress3(&sh_data, compress, sh_1);
 
 			printf("Test27 %d/%d\n", index, count);
 
@@ -237,8 +237,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-//	Test12("./data/data_rgb.txt", 3);
-	Test27("./data/data_rgb.txt", 4);
+	Test12("./data/data_rgb.txt", 3);
+//	Test27("./data/data_rgb.txt", 4);
 
 	return 0;
 }
