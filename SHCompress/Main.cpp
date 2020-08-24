@@ -1,4 +1,5 @@
-﻿#include <stdio.h>
+﻿#include <conio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 
@@ -75,7 +76,10 @@ void Test12(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc2(&sh_data, d);
-	SHBuild2(&sh_data, data_set, count);
+	float percent = SHBuild2(&sh_data, data_set, count);
+
+	printf("percent=%f\n", percent);
+	getch();
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -166,7 +170,10 @@ void Test27(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc3(&sh_data, d);
-	SHBuild3(&sh_data, data_set, count);
+	float percent = SHBuild3(&sh_data, data_set, count);
+	
+	printf("percent=%f\n", percent);
+	getch();
 	
 	IMAGE imgSource;
 	IMAGE imgCompress;
