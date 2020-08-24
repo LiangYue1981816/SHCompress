@@ -256,16 +256,16 @@ static void eigsrt(float d[], float **v, int n)
 	}
 }
 
-static int build(float **mtrx, int rows, int cols, float  *mean, float **eigvec, float  *eigval, int t)
+static float build(float **mtrx, int rows, int cols, float  *mean, float **eigvec, float  *eigval, int t)
 {
-	int i, j, rot, rcode = 0;
-	float sum;
+	int i, j, rot;
+	float sum, addup, percent = 0.0f;
 	float **c = NULL, **cct = NULL;
 	float *val = NULL, **vec = NULL;
 
 	c = (float **)alloc_matrix(rows, cols, sizeof(float));
 	cct = (float **)alloc_matrix(rows, rows, sizeof(float));
-	if (NULL == c || NULL == cct) { rcode = -1; goto RET; }
+	if (NULL == c || NULL == cct) { goto RET; }
 
 	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
 	for (i = 0; i < rows; i++) { mean[i] /= cols; }
@@ -287,6 +287,11 @@ static int build(float **mtrx, int rows, int cols, float  *mean, float **eigvec,
 	unconvert_vector((void **)&val, sizeof(float));
 	unconvert_matrix((void***)&vec, rows, rows, sizeof(float));
 
+	sum = 0.0f; addup = 0.0f;
+	for (j = 0; j < rows; j++) { sum += eigval[j]; }
+	for (j = 0; j < t;    j++) { addup += eigval[j]; }
+	percent = addup / sum;
+
 	for (j = 0; j < t; j++) {
 		sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
 		sum = sqrtf(sum);  for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
@@ -299,7 +304,7 @@ RET:
 	if (c) free_matrix((void**)c);
 	if (cct) free_matrix((void**)cct);
 
-	return rcode;
+	return percent;
 }
 
 static int compress(float *data, float *mean, float **eigvec, int N, int DIM, float *param)
@@ -402,12 +407,12 @@ void SHFree(SHData *sh_data)
 	SHInit(sh_data);
 }
 
-int SHBuild2(SHData *sh_data, float **data_set, int count)
+float SHBuild2(SHData *sh_data, float **data_set, int count)
 {
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
 
-int SHBuild3(SHData *sh_data, float **data_set, int count)
+float SHBuild3(SHData *sh_data, float **data_set, int count)
 {
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
