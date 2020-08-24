@@ -47,8 +47,7 @@ int GetDataCount(const char* szDataFileName)
 
 void Test12(const char* szDataFileName, int d)
 {
-	/*
-	const int n = 3 * 3;
+	const int n = 4 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
@@ -61,8 +60,8 @@ void Test12(const char* szDataFileName, int d)
 					fscanf(pFile, "%f", &data[j]);
 				}
 
-				for (int j = 0; j < 3; j++) {
-					data_set[i * 3 + j][index] = data[j + 1] / PI;
+				for (int j = 0; j < 4; j++) {
+					data_set[i * 4 + j][index] = data[j] / PI;
 				}
 			}
 		}
@@ -76,7 +75,7 @@ void Test12(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc2(&sh_data, d);
-	SHBuild(&sh_data, data_set, count);
+	SHBuild2(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -106,8 +105,8 @@ void Test12(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress2(&sh_data, sh_0, compress);
-			SHUncompress2(&sh_data, compress, sh_1);
+			SHCompress(&sh_data, sh_0, compress);
+			SHUncompress(&sh_data, compress, sh_1);
 
 			printf("Test12 %d/%d\n", index, count);
 
@@ -135,13 +134,11 @@ void Test12(const char* szDataFileName, int d)
 	FreeMatrix((void **)data_set);
 
 	return;
-	*/
 }
 
 void Test27(const char* szDataFileName, int d)
 {
-	/*
-	const int n = 8 * 3;
+	const int n = 9 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
@@ -154,8 +151,8 @@ void Test27(const char* szDataFileName, int d)
 					fscanf(pFile, "%f", &data[j]);
 				}
 
-				for (int j = 0; j < 8; j++) {
-					data_set[i * 8 + j][index] = data[j + 1] / PI;
+				for (int j = 0; j < 9; j++) {
+					data_set[i * 9 + j][index] = data[j] / PI;
 				}
 			}
 		}
@@ -169,7 +166,7 @@ void Test27(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc3(&sh_data, d);
-	SHBuild(&sh_data, data_set, count);
+	SHBuild3(&sh_data, data_set, count);
 	
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -199,8 +196,8 @@ void Test27(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress3(&sh_data, sh_0, compress);
-			SHUncompress3(&sh_data, compress, sh_1);
+			SHCompress(&sh_data, sh_0, compress);
+			SHUncompress(&sh_data, compress, sh_1);
 
 			printf("Test27 %d/%d\n", index, count);
 
@@ -228,7 +225,6 @@ void Test27(const char* szDataFileName, int d)
 	FreeMatrix((void **)data_set);
 	
 	return;
-	*/
 }
 
 int main(int argc, char **argv)
@@ -241,7 +237,7 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12("./data/data_rgb.txt", 3);
+//	Test12("./data/data_rgb.txt", 3);
 	Test27("./data/data_rgb.txt", 4);
 
 	return 0;
