@@ -363,6 +363,19 @@ void FreeMatrix(void **pmatrix)
 }
 
 
+static const float factors12[12] = {
+	1000.0f, 1.0f, 1.0f, 1.0f,
+	1000.0f, 1.0f, 1.0f, 1.0f,
+	1000.0f, 1.0f, 1.0f, 1.0f
+};
+
+static const float factors27[27] = {
+	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+};
+
+
 void SHInit(SHData *sh_data)
 {
 	sh_data->D = 0;
@@ -407,11 +420,6 @@ void SHFree(SHData *sh_data)
 	SHInit(sh_data);
 }
 
-const float factors12[12] = {
-		100.0f, 1.0f, 1.0f, 1.0f,
-		100.0f, 1.0f, 1.0f, 1.0f,
-		100.0f, 1.0f, 1.0f, 1.0f };
-
 float SHBuild2(SHData *sh_data, float **data_set, int count)
 {
 	for (int i = 0; i < sh_data->N; i++) {
@@ -422,11 +430,6 @@ float SHBuild2(SHData *sh_data, float **data_set, int count)
 
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
-
-const float factors27[27] = {
-		100.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		100.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		100.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 
 float SHBuild3(SHData *sh_data, float **data_set, int count)
 {
