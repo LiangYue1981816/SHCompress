@@ -414,7 +414,13 @@ int SHBuild3(SHData *sh_data, float **data_set, int count)
 
 void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
 {
-	compress(source_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
+	float source_temp_data[12] = { 0.0f };
+
+	for (int i = 0; i < 12; i++) {
+		source_temp_data[i] = source_data[i];
+	}
+
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
 }
 
 void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
@@ -424,7 +430,13 @@ void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 
 void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
 {
-	compress(source_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
+	float source_temp_data[27] = { 0.0f };
+
+	for (int i = 0; i < 27; i++) {
+		source_temp_data[i] = source_data[i];
+	}
+
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
 }
 
 void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
