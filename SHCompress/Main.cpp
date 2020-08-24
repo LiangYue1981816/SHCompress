@@ -152,7 +152,7 @@ void Test27(const char* szDataFileName, int d)
 				}
 
 				for (int j = 0; j < 9; j++) {
-					data_set[i * 9 + j][index] = data[j] / PI;
+					data_set[i * 9 + j][index] = data[j];
 				}
 			}
 		}
@@ -192,7 +192,7 @@ void Test27(const char* szDataFileName, int d)
 				}
 
 				for (int j = 0; j < 9; j++) {
-					sh_0[i * 9 + j] = data[j] / PI;
+					sh_0[i * 9 + j] = data[j];
 				}
 			}
 
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12("./data/data_rgb.txt", 3);
+	Test12("./data/data1.txt", 10);
 //	Test27("./data/data_rgb.txt", 4);
 
 	return 0;
