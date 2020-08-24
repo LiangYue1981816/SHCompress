@@ -50,10 +50,6 @@ void Test12(const char* szDataFileName, int d)
 {
 	const int n = 4 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
-	const float factors[12] = { 
-		1.0f, 1.0f, 1.0f, 1.0f, 
-		1.0f, 1.0f, 1.0f, 1.0f, 
-		1.0f, 1.0f, 1.0f, 1.0f };
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
@@ -68,10 +64,6 @@ void Test12(const char* szDataFileName, int d)
 				for (int j = 0; j < 4; j++) {
 					data_set[i * 4 + j][index] = data[j] / PI;
 				}
-			}
-
-			for (int i = 0; i < 12; i++) {
-				data_set[i][index] *= factors[i];
 			}
 		}
 		fclose(pFile);
@@ -117,17 +109,8 @@ void Test12(const char* szDataFileName, int d)
 				}
 			}
 
-			for (int i = 0; i < 12; i++) {
-				sh_0[i] *= factors[i];
-			}
-
 			SHCompress2(&sh_data, sh_0, compress);
 			SHUncompress2(&sh_data, compress, sh_1);
-
-			for (int i = 0; i < 12; i++) {
-				sh_0[i] /= factors[i];
-				sh_1[i] /= factors[i];
-			}
 
 			printf("Test12 %d/%d\n", index, count);
 
@@ -161,10 +144,6 @@ void Test27(const char* szDataFileName, int d)
 {
 	const int n = 9 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
-	const float factors[27] = {
-		1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
@@ -179,10 +158,6 @@ void Test27(const char* szDataFileName, int d)
 				for (int j = 0; j < 9; j++) {
 					data_set[i * 9 + j][index] = data[j] / PI;
 				}
-			}
-
-			for (int i = 0; i < 27; i++) {
-				data_set[i][index] *= factors[i];
 			}
 		}
 		fclose(pFile);
@@ -228,17 +203,8 @@ void Test27(const char* szDataFileName, int d)
 				}
 			}
 
-			for (int i = 0; i < 27; i++) {
-				sh_0[i] *= factors[i];
-			}
-
 			SHCompress3(&sh_data, sh_0, compress);
 			SHUncompress3(&sh_data, compress, sh_1);
-
-			for (int i = 0; i < 27; i++) {
-				sh_0[i] /= factors[i];
-				sh_1[i] /= factors[i];
-			}
 
 			printf("Test27 %d/%d\n", index, count);
 
@@ -278,8 +244,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12("./data/data_rgb.txt", 3);
-	Test27("./data/data_rgb.txt", 4);
+	Test12("./data/data1.txt", 6);
+	Test27("./data/data1.txt", 9);
 
 	return 0;
 }
