@@ -402,7 +402,12 @@ void SHFree(SHData *sh_data)
 	SHInit(sh_data);
 }
 
-int SHBuild(SHData *sh_data, float **data_set, int count)
+int SHBuild2(SHData *sh_data, float **data_set, int count)
+{
+	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
+}
+
+int SHBuild3(SHData *sh_data, float **data_set, int count)
 {
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
