@@ -258,6 +258,8 @@ static void jacobi(float **a, int n, float d[], float **v, int *nrot)
 			z[ip] = 0.0f;
 		}
 	}
+	free_vector(z, 1, n);
+	free_vector(b, 1, n);
 }
 
 static void eigsrt(float d[], float **v, int n)
