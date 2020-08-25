@@ -129,6 +129,20 @@ static void unconvert_vector(void **pvector, int nsize)
 	(*pvoid) += nsize;
 }
 
+static void matrix_mul_matrix(float **a, float **b, float **c, int rows, int cols_rows, int cols)
+{
+	int i, j, k;
+
+	for (i = 0; i < rows; i++) {
+		for (j = 0; j < cols; j++) {
+			c[i][j] = 0.0f;
+			for (k = 0; k < cols_rows; k++) {
+				c[i][j] += a[i][k] * b[k][j];
+			}
+		}
+	}
+}
+
 static void matrix_mul_matrix_transpose(float **a, float **b, float **c, int rows, int cols)
 {
 	int i, j, k;
@@ -138,6 +152,20 @@ static void matrix_mul_matrix_transpose(float **a, float **b, float **c, int row
 			c[i][j] = 0.0f;
 			for (k = 0; k < cols; k++) {
 				c[i][j] += a[i][k] * b[j][k];
+			}
+		}
+	}
+}
+
+static void matrix_transpose_mul_matrix(float **a, float **b, float **c, int rows, int cols)
+{
+	int i, j, k;
+
+	for (i = 0; i < cols; i++) {
+		for (j = 0; j < cols; j++) {
+			c[i][j] = 0.0f;
+			for (k = 0; k < rows; k++) {
+				c[i][j] += a[k][i] * b[k][j];
 			}
 		}
 	}
@@ -256,7 +284,7 @@ static void eigsrt(float d[], float **v, int n)
 	}
 }
 
-static float build(float **mtrx, int rows, int cols, float  *mean, float **eigvec, float  *eigval, int t)
+static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
 {
 	int i, j, rot;
 	float sum, addup, percent = 0.0f;
@@ -303,6 +331,74 @@ static float build(float **mtrx, int rows, int cols, float  *mean, float **eigve
 RET:
 	if (c) free_matrix((void**)c);
 	if (cct) free_matrix((void**)cct);
+
+	return percent;
+}
+
+static float build_svd(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
+{
+	int i, j, rot;
+	float sum, addup, sqrtval, percent = 0.0f;
+	float **c = NULL, **ctc = NULL;
+	float **vec = NULL, *val = NULL;
+
+	c = (float **)alloc_matrix(rows, cols, sizeof(float));
+	ctc = (float **)alloc_matrix(cols, cols, sizeof(float));
+	vec = (float **)alloc_matrix(cols, cols, sizeof(float));
+	val = (float *)calloc(cols, sizeof(float));
+	if (NULL == c || NULL == ctc || NULL == val || NULL == vec) { goto RET; }
+
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
+	for (i = 0; i < rows; i++) { mean[i] /= cols; }
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { c[i][j] = mtrx[i][j] - mean[i]; } }
+
+	matrix_transpose_mul_matrix(c, c, ctc, rows, cols);
+
+	convert_matrix((void***)&ctc, cols, cols, sizeof(float));
+	convert_vector((void **)&val, sizeof(float));
+	convert_matrix((void***)&vec, cols, cols, sizeof(float));
+
+	jacobi(ctc, cols, val, vec, &rot);
+	eigsrt(val, vec, cols);
+
+	unconvert_matrix((void***)&ctc, cols, cols, sizeof(float));
+	unconvert_vector((void **)&val, sizeof(float));
+	unconvert_matrix((void***)&vec, cols, cols, sizeof(float));
+
+	sum = 0.0f; addup = 0.0f;
+	for (j = 0; j < cols; j++) { sum += val[j]; }
+	for (j = 0; j < t;    j++) { addup += val[j]; }
+	percent = addup / sum;
+
+	matrix_mul_matrix(c, vec, eigvec, rows, cols, t < cols ? t : cols);
+
+	for (j = 0; j < t; j++) {
+		if (val[j] > 0.0f) {
+			eigval[j] = val[j];
+			sqrtval = sqrtf(val[j]);
+			for (i = 0; i < rows; i++) eigvec[i][j] /= sqrtval;
+		}
+		else {
+			eigval[j] = 0.0f;
+			for (i = 0; i < rows; i++) eigvec[i][j] = 0.0f;
+		}
+	}
+
+	for (j = 0; j < t; j++) {
+		if (eigval[j] > 0.0f) {
+			sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
+			sum = sqrtf(sum); for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
+		}
+	}
+
+	for (j = 0; j < t; j++) { eigval[j] = eigval[j] / (cols - 1); }
+	for (; j < rows; j++) { for (i = 0; i < rows; i++) { eigvec[i][j] = 0.0f; } eigval[j] = 0.0f; }
+
+RET:
+	if (c) free_matrix((void**)c);
+	if (ctc) free_matrix((void**)ctc);
+	if (vec) free_matrix((void**)vec);
+	if (val) free(val);
 
 	return percent;
 }
@@ -429,6 +525,7 @@ float SHBuild2(SHData *sh_data, float **data_set, int count)
 	}
 
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
+//	return build_svd(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
 
 float SHBuild3(SHData *sh_data, float **data_set, int count)
@@ -440,6 +537,7 @@ float SHBuild3(SHData *sh_data, float **data_set, int count)
 	}
 
 	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
+//	return build_svd(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
 }
 
 void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
