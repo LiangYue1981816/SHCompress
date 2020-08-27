@@ -286,9 +286,9 @@ static void eigsrt(float d[], float **v, int n)
 	}
 }
 
-static int build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, float percent)
+static void build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int *t, float percent)
 {
-	int i, j, rot, t = 0;
+	int i, j, rot;
 	float sum, addup;
 	float **c = NULL, **cct = NULL;
 	float *val = NULL, **vec = NULL;
@@ -317,23 +317,23 @@ static int build(float **mtrx, int rows, int cols, float *mean, float **eigvec, 
 	unconvert_vector((void **)&val, sizeof(float));
 	unconvert_matrix((void***)&vec, rows, rows, sizeof(float));
 
-	sum = 0.0f; addup = 0.0f;
+	sum = 0.0f; addup = 0.0f; *t = 0;
 	for (j = 0; j < rows; j++) { sum += eigval[j]; }
-	for (j = 0; j < rows; j++) { addup += eigval[j]; if (addup / sum > percent) { t = j; break; } }
+	for (j = 0; j < rows; j++) { addup += eigval[j]; if (addup / sum > percent) { *t = j; break; } }
 
-	for (j = 0; j < t; j++) {
+	for (j = 0; j < *t; j++) {
 		sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
 		sum = sqrtf(sum);  for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
 	}
 
-	for (j = 0; j < t; j++) { eigval[j] = eigval[j] / (cols - 1); }
+	for (j = 0; j < *t; j++) { eigval[j] = eigval[j] / (cols - 1); }
 	for (; j < rows; j++) { for (i = 0; i < rows; i++) { eigvec[i][j] = 0.0f; } eigval[j] = 0.0f; }
 
 RET:
 	if (c) free_matrix((void**)c);
 	if (cct) free_matrix((void**)cct);
 
-	return t;
+	return;
 }
 
 static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
