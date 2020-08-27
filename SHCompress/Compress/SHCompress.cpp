@@ -286,6 +286,56 @@ static void eigsrt(float d[], float **v, int n)
 	}
 }
 
+static void build_percent(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, float percent, int *t)
+{
+	int i, j, rot;
+	float sum, addup;
+	float **c = NULL, **cct = NULL;
+	float *val = NULL, **vec = NULL;
+
+	c = (float **)alloc_matrix(rows, cols, sizeof(float));
+	cct = (float **)alloc_matrix(rows, rows, sizeof(float));
+	if (NULL == c || NULL == cct) { goto RET; }
+
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
+	for (i = 0; i < rows; i++) { mean[i] /= cols; }
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { c[i][j] = mtrx[i][j] - mean[i]; } }
+
+	matrix_mul_matrix_transpose(c, c, cct, rows, cols);
+
+	val = eigval;
+	vec = eigvec;
+
+	convert_matrix((void***)&cct, rows, rows, sizeof(float));
+	convert_vector((void **)&val, sizeof(float));
+	convert_matrix((void***)&vec, rows, rows, sizeof(float));
+
+	jacobi(cct, rows, val, vec, &rot);
+	eigsrt(val, vec, rows);
+
+	unconvert_matrix((void***)&cct, rows, rows, sizeof(float));
+	unconvert_vector((void **)&val, sizeof(float));
+	unconvert_matrix((void***)&vec, rows, rows, sizeof(float));
+
+	sum = 0.0f; addup = 0.0f;
+	for (j = 0; j < rows; j++) { sum += eigval[j]; }
+	for (j = 0; j < cols; j++) { addup += eigval[j]; if (addup / sum > percent) { *t = j; break; } }
+
+	for (j = 0; j < *t; j++) {
+		sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
+		sum = sqrtf(sum);  for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
+	}
+
+	for (j = 0; j < *t; j++) { eigval[j] = eigval[j] / (cols - 1); }
+	for (; j < rows; j++) { for (i = 0; i < rows; i++) { eigvec[i][j] = 0.0f; } eigval[j] = 0.0f; }
+
+RET:
+	if (c) free_matrix((void**)c);
+	if (cct) free_matrix((void**)cct);
+
+	return;
+}
+
 static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
 {
 	int i, j, rot;
