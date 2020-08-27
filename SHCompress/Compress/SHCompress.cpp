@@ -319,7 +319,7 @@ static void build_percent(float **mtrx, int rows, int cols, float *mean, float *
 
 	sum = 0.0f; addup = 0.0f;
 	for (j = 0; j < rows; j++) { sum += eigval[j]; }
-	for (j = 0; j < cols; j++) { addup += eigval[j]; if (addup / sum > percent) { *t = j; break; } }
+	for (j = 0; j < rows; j++) { addup += eigval[j]; if (addup / sum > percent) { *t = j; break; } }
 
 	for (j = 0; j < *t; j++) {
 		sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
