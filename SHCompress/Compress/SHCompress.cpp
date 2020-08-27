@@ -458,7 +458,7 @@ static const float factors27[27] = {
 
 void SHInit(SHData *sh_data)
 {
-	sh_data->N = 0;
+	sh_data->n = 0;
 	sh_data->mean = NULL;
 	sh_data->eigval = NULL;
 	sh_data->eigvec = NULL;
@@ -466,18 +466,18 @@ void SHInit(SHData *sh_data)
 
 void SHAlloc2(SHData *sh_data)
 {
-	sh_data->N = 12;
-	sh_data->mean = (float *)calloc(sh_data->N, sizeof(float));
-	sh_data->eigval = (float *)calloc(sh_data->N, sizeof(float));
-	sh_data->eigvec = (float **)alloc_matrix(sh_data->N, sh_data->N, sizeof(float));
+	sh_data->n = 12;
+	sh_data->mean = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->eigval = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
 }
 
 void SHAlloc3(SHData *sh_data)
 {
-	sh_data->N = 27;
-	sh_data->mean = (float *)calloc(sh_data->N, sizeof(float));
-	sh_data->eigval = (float *)calloc(sh_data->N, sizeof(float));
-	sh_data->eigvec = (float **)alloc_matrix(sh_data->N, sh_data->N, sizeof(float));
+	sh_data->n = 27;
+	sh_data->mean = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->eigval = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
 }
 
 void SHFree(SHData *sh_data)
@@ -499,24 +499,24 @@ void SHFree(SHData *sh_data)
 
 void SHBuild2(SHData *sh_data, float **data_set, int count)
 {
-	for (int i = 0; i < sh_data->N; i++) {
+	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
 			data_set[i][j] *= factors12[i];
 		}
 	}
 
-	build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->N);
+	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->n);
 }
 
 void SHBuild3(SHData *sh_data, float **data_set, int count)
 {
-	for (int i = 0; i < sh_data->N; i++) {
+	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
 			data_set[i][j] *= factors27[i];
 		}
 	}
 
-	build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->N);
+	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->n);
 }
 
 void SHCompress2(SHData *sh_data, float *source_data, float *compress_data, int d)
@@ -528,17 +528,17 @@ void SHCompress2(SHData *sh_data, float *source_data, float *compress_data, int 
 	}
 
 	d = d < 1 ? 1 : d;
-	d = d < sh_data->N ? d : sh_data->N;
+	d = d < sh_data->n ? d : sh_data->n;
 
-	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, d, compress_data);
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->n, d, compress_data);
 }
 
 void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data, int d)
 {
 	d = d < 1 ? 1 : d;
-	d = d < sh_data->N ? d : sh_data->N;
+	d = d < sh_data->n ? d : sh_data->n;
 
-	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, d, source_data);
+	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->n, d, source_data);
 
 	for (int i = 0; i < 12; i++) {
 		source_data[i] /= factors12[i];
@@ -554,17 +554,17 @@ void SHCompress3(SHData *sh_data, float *source_data, float *compress_data, int 
 	}
 
 	d = d < 1 ? 1 : d;
-	d = d < sh_data->N ? d : sh_data->N;
+	d = d < sh_data->n ? d : sh_data->n;
 
-	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, d, compress_data);
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->n, d, compress_data);
 }
 
 void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data, int d)
 {
 	d = d < 1 ? 1 : d;
-	d = d < sh_data->N ? d : sh_data->N;
+	d = d < sh_data->n ? d : sh_data->n;
 
-	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, d, source_data);
+	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->n, d, source_data);
 
 	for (int i = 0; i < 27; i++) {
 		source_data[i] /= factors27[i];

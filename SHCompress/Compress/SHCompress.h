@@ -4,7 +4,7 @@
 
 
 typedef struct SHData {
-	int N;
+	int n;
 	float *mean;
 	float *eigval;
 	float **eigvec;
