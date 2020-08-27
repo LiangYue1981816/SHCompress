@@ -476,25 +476,22 @@ static const float factors27[27] = {
 
 void SHInit(SHData *sh_data)
 {
-	sh_data->D = 0;
 	sh_data->N = 0;
 	sh_data->mean = NULL;
 	sh_data->eigval = NULL;
 	sh_data->eigvec = NULL;
 }
 
-void SHAlloc2(SHData *sh_data, int d)
+void SHAlloc2(SHData *sh_data)
 {
-	sh_data->D = d;
 	sh_data->N = 12;
 	sh_data->mean = (float *)calloc(sh_data->N, sizeof(float));
 	sh_data->eigval = (float *)calloc(sh_data->N, sizeof(float));
 	sh_data->eigvec = (float **)alloc_matrix(sh_data->N, sh_data->N, sizeof(float));
 }
 
-void SHAlloc3(SHData *sh_data, int d)
+void SHAlloc3(SHData *sh_data)
 {
-	sh_data->D = d;
 	sh_data->N = 27;
 	sh_data->mean = (float *)calloc(sh_data->N, sizeof(float));
 	sh_data->eigval = (float *)calloc(sh_data->N, sizeof(float));
@@ -518,7 +515,7 @@ void SHFree(SHData *sh_data)
 	SHInit(sh_data);
 }
 
-float SHBuild2(SHData *sh_data, float **data_set, int count)
+void SHBuild2(SHData *sh_data, float **data_set, int count)
 {
 	for (int i = 0; i < sh_data->N; i++) {
 		for (int j = 0; j < count; j++) {
@@ -526,11 +523,10 @@ float SHBuild2(SHData *sh_data, float **data_set, int count)
 		}
 	}
 
-	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
-//	return build_svd(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
+	build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->N);
 }
 
-float SHBuild3(SHData *sh_data, float **data_set, int count)
+void SHBuild3(SHData *sh_data, float **data_set, int count)
 {
 	for (int i = 0; i < sh_data->N; i++) {
 		for (int j = 0; j < count; j++) {
@@ -538,11 +534,10 @@ float SHBuild3(SHData *sh_data, float **data_set, int count)
 		}
 	}
 
-	return build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
-//	return build_svd(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->D);
+	build(data_set, sh_data->N, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->N);
 }
 
-void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
+void SHCompress2(SHData *sh_data, float *source_data, float *compress_data, int d)
 {
 	float source_temp_data[12] = { 0.0f };
 
@@ -550,19 +545,19 @@ void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
 		source_temp_data[i] = factors12[i] * source_data[i];
 	}
 
-	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, d, compress_data);
 }
 
-void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
+void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data, int d)
 {
-	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, sh_data->D, source_data);
+	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, d, source_data);
 
 	for (int i = 0; i < 12; i++) {
 		source_data[i] /= factors12[i];
 	}
 }
 
-void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
+void SHCompress3(SHData *sh_data, float *source_data, float *compress_data, int d)
 {
 	float source_temp_data[27] = { 0.0f };
 
@@ -570,12 +565,18 @@ void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
 		source_temp_data[i] = factors27[i] * source_data[i];
 	}
 
-	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, sh_data->D, compress_data);
+	d = d < 1 ? 1 : d;
+	d = d < sh_data->N ? d : sh_data->N;
+
+	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, d, compress_data);
 }
 
-void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
+void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data, int d)
 {
-	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, sh_data->D, source_data);
+	d = d < 1 ? 1 : d;
+	d = d < sh_data->N ? d : sh_data->N;
+
+	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, d, source_data);
 
 	for (int i = 0; i < 27; i++) {
 		source_data[i] /= factors27[i];

@@ -75,11 +75,8 @@ void Test12(const char* szDataFileName, int d)
 
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc2(&sh_data, d);
-	float percent = SHBuild2(&sh_data, data_set, count);
-
-	printf("percent=%f\n", percent);
-	getch();
+	SHAlloc2(&sh_data);
+	SHBuild2(&sh_data, data_set, count);
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -109,8 +106,8 @@ void Test12(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress2(&sh_data, sh_0, compress);
-			SHUncompress2(&sh_data, compress, sh_1);
+			SHCompress2(&sh_data, sh_0, compress, d);
+			SHUncompress2(&sh_data, compress, sh_1, d);
 
 			printf("Test12 %d/%d\n", index, count);
 
@@ -169,11 +166,8 @@ void Test27(const char* szDataFileName, int d)
 	
 	SHData sh_data;
 	SHInit(&sh_data);
-	SHAlloc3(&sh_data, d);
-	float percent = SHBuild3(&sh_data, data_set, count);
-	
-	printf("percent=%f\n", percent);
-	getch();
+	SHAlloc3(&sh_data);
+	SHBuild3(&sh_data, data_set, count);
 	
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -203,8 +197,8 @@ void Test27(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress3(&sh_data, sh_0, compress);
-			SHUncompress3(&sh_data, compress, sh_1);
+			SHCompress3(&sh_data, sh_0, compress, d);
+			SHUncompress3(&sh_data, compress, sh_1, d);
 
 			printf("Test27 %d/%d\n", index, count);
 
