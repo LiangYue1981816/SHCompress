@@ -46,7 +46,7 @@ int GetDataCount(const char* szDataFileName)
 	return lines;
 }
 
-void Test12(const char* szDataFileName, int d)
+void Test12(const char* szDataFileName, float percent)
 {
 	const int n = 4 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
@@ -76,7 +76,10 @@ void Test12(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc2(&sh_data);
-	SHBuild2(&sh_data, data_set, count);
+	SHBuild2(&sh_data, data_set, count, percent);
+
+	printf("dim = %d\n", sh_data.d);
+	getch();
 
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -106,13 +109,13 @@ void Test12(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress2(&sh_data, sh_0, compress, d);
-			SHUncompress2(&sh_data, compress, sh_1, d);
+			SHCompress2(&sh_data, sh_0, compress);
+			SHUncompress2(&sh_data, compress, sh_1);
 
 			printf("Test12 %d/%d\n", index, count);
 
 			char szFileName[260];
-			sprintf(szFileName, "./Result2/%d_%d.jpg", index, d);
+			sprintf(szFileName, "./Result2/%d_%f.jpg", index, percent);
 
 			Preview4(&imgSource, &sh_0[0], &sh_0[4], &sh_0[8], size);
 			IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
@@ -137,7 +140,7 @@ void Test12(const char* szDataFileName, int d)
 	return;
 }
 
-void Test27(const char* szDataFileName, int d)
+void Test27(const char* szDataFileName, float percent)
 {
 	const int n = 9 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
@@ -167,7 +170,10 @@ void Test27(const char* szDataFileName, int d)
 	SHData sh_data;
 	SHInit(&sh_data);
 	SHAlloc3(&sh_data);
-	SHBuild3(&sh_data, data_set, count);
+	SHBuild3(&sh_data, data_set, count, percent);
+
+	printf("dim = %d\n", sh_data.d);
+	getch();
 	
 	IMAGE imgSource;
 	IMAGE imgCompress;
@@ -197,13 +203,13 @@ void Test27(const char* szDataFileName, int d)
 				}
 			}
 
-			SHCompress3(&sh_data, sh_0, compress, d);
-			SHUncompress3(&sh_data, compress, sh_1, d);
+			SHCompress3(&sh_data, sh_0, compress);
+			SHUncompress3(&sh_data, compress, sh_1);
 
 			printf("Test27 %d/%d\n", index, count);
 
 			char szFileName[260];
-			sprintf(szFileName, "./Result3/%d_%d.jpg", index, d);
+			sprintf(szFileName, "./Result3/%d_%f.jpg", index, percent);
 
 			Preview9(&imgSource, &sh_0[0], &sh_0[9], &sh_0[18], size);
 			IMAGE_SetImageArea(&imgPreview, 0, 0, IMAGE_WIDTH(&imgPreview) - 1, IMAGE_HEIGHT(&imgPreview) / 2 - 1);
@@ -238,8 +244,8 @@ int main(int argc, char **argv)
 	glutCreateWindow("");
 	glewInit();
 
-	Test12("./data/data1.txt", 6);
-	Test27("./data/data1.txt", 9);
+	Test12("./data/data1.txt", 0.999f);
+	Test27("./data/data1.txt", 0.999f);
 
 	return 0;
 }
