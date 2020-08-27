@@ -545,11 +545,17 @@ void SHCompress2(SHData *sh_data, float *source_data, float *compress_data, int 
 		source_temp_data[i] = factors12[i] * source_data[i];
 	}
 
+	d = d < 1 ? 1 : d;
+	d = d < sh_data->N ? d : sh_data->N;
+
 	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->N, d, compress_data);
 }
 
 void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data, int d)
 {
+	d = d < 1 ? 1 : d;
+	d = d < sh_data->N ? d : sh_data->N;
+
 	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->N, d, source_data);
 
 	for (int i = 0; i < 12; i++) {
