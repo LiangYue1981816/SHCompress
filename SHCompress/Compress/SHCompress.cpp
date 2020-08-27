@@ -286,9 +286,9 @@ static void eigsrt(float d[], float **v, int n)
 	}
 }
 
-static void build_percent(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, float percent, int *t)
+static int build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, float percent)
 {
-	int i, j, rot;
+	int i, j, rot, t = 0;
 	float sum, addup;
 	float **c = NULL, **cct = NULL;
 	float *val = NULL, **vec = NULL;
@@ -319,21 +319,21 @@ static void build_percent(float **mtrx, int rows, int cols, float *mean, float *
 
 	sum = 0.0f; addup = 0.0f;
 	for (j = 0; j < rows; j++) { sum += eigval[j]; }
-	for (j = 0; j < rows; j++) { addup += eigval[j]; if (addup / sum > percent) { *t = j; break; } }
+	for (j = 0; j < rows; j++) { addup += eigval[j]; if (addup / sum > percent) { t = j; break; } }
 
-	for (j = 0; j < *t; j++) {
+	for (j = 0; j < t; j++) {
 		sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
 		sum = sqrtf(sum);  for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
 	}
 
-	for (j = 0; j < *t; j++) { eigval[j] = eigval[j] / (cols - 1); }
+	for (j = 0; j < t; j++) { eigval[j] = eigval[j] / (cols - 1); }
 	for (; j < rows; j++) { for (i = 0; i < rows; i++) { eigvec[i][j] = 0.0f; } eigval[j] = 0.0f; }
 
 RET:
 	if (c) free_matrix((void**)c);
 	if (cct) free_matrix((void**)cct);
 
-	return;
+	return t;
 }
 
 static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
@@ -383,74 +383,6 @@ static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec
 RET:
 	if (c) free_matrix((void**)c);
 	if (cct) free_matrix((void**)cct);
-
-	return percent;
-}
-
-static float build_svd(float **mtrx, int rows, int cols, float *mean, float **eigvec, float *eigval, int t)
-{
-	int i, j, rot;
-	float sum, addup, sqrtval, percent = 0.0f;
-	float **c = NULL, **ctc = NULL;
-	float **vec = NULL, *val = NULL;
-
-	c = (float **)alloc_matrix(rows, cols, sizeof(float));
-	ctc = (float **)alloc_matrix(cols, cols, sizeof(float));
-	vec = (float **)alloc_matrix(cols, cols, sizeof(float));
-	val = (float *)calloc(cols, sizeof(float));
-	if (NULL == c || NULL == ctc || NULL == val || NULL == vec) { goto RET; }
-
-	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
-	for (i = 0; i < rows; i++) { mean[i] /= cols; }
-	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { c[i][j] = mtrx[i][j] - mean[i]; } }
-
-	matrix_transpose_mul_matrix(c, c, ctc, rows, cols);
-
-	convert_matrix((void***)&ctc, cols, cols, sizeof(float));
-	convert_vector((void **)&val, sizeof(float));
-	convert_matrix((void***)&vec, cols, cols, sizeof(float));
-
-	jacobi(ctc, cols, val, vec, &rot);
-	eigsrt(val, vec, cols);
-
-	unconvert_matrix((void***)&ctc, cols, cols, sizeof(float));
-	unconvert_vector((void **)&val, sizeof(float));
-	unconvert_matrix((void***)&vec, cols, cols, sizeof(float));
-
-	sum = 0.0f; addup = 0.0f;
-	for (j = 0; j < cols; j++) { sum += val[j]; }
-	for (j = 0; j < t;    j++) { addup += val[j]; }
-	percent = addup / sum;
-
-	matrix_mul_matrix(c, vec, eigvec, rows, cols, t < cols ? t : cols);
-
-	for (j = 0; j < t; j++) {
-		if (val[j] > 0.0f) {
-			eigval[j] = val[j];
-			sqrtval = sqrtf(val[j]);
-			for (i = 0; i < rows; i++) eigvec[i][j] /= sqrtval;
-		}
-		else {
-			eigval[j] = 0.0f;
-			for (i = 0; i < rows; i++) eigvec[i][j] = 0.0f;
-		}
-	}
-
-	for (j = 0; j < t; j++) {
-		if (eigval[j] > 0.0f) {
-			sum = 0.0f; for (i = 0; i < rows; i++) sum += eigvec[i][j] * eigvec[i][j];
-			sum = sqrtf(sum); for (i = 0; i < rows; i++) eigvec[i][j] /= sum;
-		}
-	}
-
-	for (j = 0; j < t; j++) { eigval[j] = eigval[j] / (cols - 1); }
-	for (; j < rows; j++) { for (i = 0; i < rows; i++) { eigvec[i][j] = 0.0f; } eigval[j] = 0.0f; }
-
-RET:
-	if (c) free_matrix((void**)c);
-	if (ctc) free_matrix((void**)ctc);
-	if (vec) free_matrix((void**)vec);
-	if (val) free(val);
 
 	return percent;
 }
