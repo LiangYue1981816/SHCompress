@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 	glewInit();
 
 	Test12("./data/data1.txt", 0.999f);
-	Test27("./data/data1.txt", 0.995f);
+	Test27("./data/data1.txt", 0.999f);
 
 	return 0;
 }
