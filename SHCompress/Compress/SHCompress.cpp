@@ -6,7 +6,7 @@ static float* alloc_vector(int nl, int nh)
 {
 	float *v = NULL;
 
-	v = (float*)calloc(nh - nl + 2, sizeof(float));
+	v = (float*)malloc((nh - nl + 2) * sizeof(float));
 	if (NULL == v) return NULL;
 
 	return v - nl + 1;
@@ -31,7 +31,7 @@ static void** alloc_matrix(int nrows, int ncols, int nsize)
 	nheadersize = ((nrows * sizeof(void *) + 3) / 4) * 4;
 	nbuffersize = nheadersize + nlinesize * nrows;
 
-	pbuffer = (unsigned char *)calloc(nbuffersize, sizeof(unsigned char));
+	pbuffer = (unsigned char *)malloc(nbuffersize * sizeof(unsigned char));
 	if (NULL == pbuffer) return NULL;
 
 	ppline = (unsigned char **)pbuffer;
@@ -468,16 +468,16 @@ void SHInit(SHData *sh_data)
 void SHAlloc2(SHData *sh_data)
 {
 	sh_data->n = 12;
-	sh_data->mean = (float *)calloc(sh_data->n, sizeof(float));
-	sh_data->eigval = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->mean = (float *)malloc(sh_data->n * sizeof(float));
+	sh_data->eigval = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
 }
 
 void SHAlloc3(SHData *sh_data)
 {
 	sh_data->n = 27;
-	sh_data->mean = (float *)calloc(sh_data->n, sizeof(float));
-	sh_data->eigval = (float *)calloc(sh_data->n, sizeof(float));
+	sh_data->mean = (float *)malloc(sh_data->n * sizeof(float));
+	sh_data->eigval = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
 }
 
