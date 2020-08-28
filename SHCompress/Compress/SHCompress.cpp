@@ -297,6 +297,7 @@ static void build(float **mtrx, int rows, int cols, float *mean, float **eigvec,
 	cct = (float **)alloc_matrix(rows, rows, sizeof(float));
 	if (NULL == c || NULL == cct) { goto RET; }
 
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] = 0.0f; } }
 	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
 	for (i = 0; i < rows; i++) { mean[i] /= cols; }
 	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { c[i][j] = mtrx[i][j] - mean[i]; } }
@@ -347,6 +348,7 @@ static float build(float **mtrx, int rows, int cols, float *mean, float **eigvec
 	cct = (float **)alloc_matrix(rows, rows, sizeof(float));
 	if (NULL == c || NULL == cct) { goto RET; }
 
+	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] = 0.0f; } }
 	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { mean[i] += mtrx[i][j]; } }
 	for (i = 0; i < rows; i++) { mean[i] /= cols; }
 	for (i = 0; i < rows; i++) { for (j = 0; j < cols; j++) { c[i][j] = mtrx[i][j] - mean[i]; } }
