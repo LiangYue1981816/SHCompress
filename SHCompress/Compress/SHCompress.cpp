@@ -478,7 +478,9 @@ static void precompute_dataset(float **data_set, int n, int count)
 
 	for (int j = 0; j < count; j++) {
 		for (int i = 0; i < n; i++) {
+//			if (fabsf(data_set[i][j] - mean[i]) > 1.0f * avedev[i]) {
 			if (fabsf(data_set[i][j] - mean[i]) > 2.0f * avedev[i]) {
+//			if (fabsf(data_set[i][j] - mean[i]) > 3.0f * avedev[i]) {
 				goto INVALID;
 			}
 		}
