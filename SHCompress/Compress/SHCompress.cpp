@@ -451,6 +451,32 @@ static const float factors[27] = {
 	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
 };
 
+static void precompute_dataset(float **data_set, int n, int count)
+{
+	float mean[27] = { 0.0f };
+	float avedev[27] = { 0.0f };
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < count; j++) {
+			mean[i] += data_set[i][j];
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		mean[i] = mean[i] / count;
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < count; j++) {
+			avedev[i] += fabsf(data_set[i][j] - mean[i]);
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		avedev[i] = avedev[i] / count;
+	}
+}
+
 
 void SHInit(SHData *sh_data)
 {
@@ -521,6 +547,8 @@ void SHZero(SHData *sh_data)
 
 void SHBuild2(SHData *sh_data, float **data_set, int count, int dim)
 {
+	precompute_dataset(data_set, sh_data->n, count);
+
 	sh_data->d = dim;
 
 	for (int i = 0; i < sh_data->n; i++) {
@@ -534,6 +562,8 @@ void SHBuild2(SHData *sh_data, float **data_set, int count, int dim)
 
 void SHBuild2(SHData *sh_data, float **data_set, int count, float percent)
 {
+	precompute_dataset(data_set, sh_data->n, count);
+
 	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, &sh_data->d, percent);
 
 	for (int i = 0; i < sh_data->n; i++) {
@@ -547,6 +577,8 @@ void SHBuild2(SHData *sh_data, float **data_set, int count, float percent)
 
 void SHBuild3(SHData *sh_data, float **data_set, int count, int dim)
 {
+	precompute_dataset(data_set, sh_data->n, count);
+
 	sh_data->d = dim;
 
 	for (int i = 0; i < sh_data->n; i++) {
@@ -560,6 +592,8 @@ void SHBuild3(SHData *sh_data, float **data_set, int count, int dim)
 
 void SHBuild3(SHData *sh_data, float **data_set, int count, float percent)
 {
+	precompute_dataset(data_set, sh_data->n, count);
+
 	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, &sh_data->d, percent);
 
 	for (int i = 0; i < sh_data->n; i++) {
