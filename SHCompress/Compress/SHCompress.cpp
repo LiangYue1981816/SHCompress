@@ -445,13 +445,7 @@ void FreeMatrix(void **pmatrix)
 }
 
 
-static const float factors12[12] = {
-	1000.0f, 1.0f, 1.0f, 1.0f,
-	1000.0f, 1.0f, 1.0f, 1.0f,
-	1000.0f, 1.0f, 1.0f, 1.0f
-};
-
-static const float factors27[27] = {
+static const float factors[27] = {
 	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 	1000.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
@@ -531,7 +525,7 @@ void SHBuild2(SHData *sh_data, float **data_set, int count, int dim)
 
 	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
-			data_set[i][j] *= factors12[i];
+			data_set[i][j] *= factors[i];
 		}
 	}
 
@@ -544,7 +538,7 @@ void SHBuild2(SHData *sh_data, float **data_set, int count, float percent)
 
 	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
-			data_set[i][j] *= factors12[i];
+			data_set[i][j] *= factors[i];
 		}
 	}
 
@@ -557,7 +551,7 @@ void SHBuild3(SHData *sh_data, float **data_set, int count, int dim)
 
 	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
-			data_set[i][j] *= factors27[i];
+			data_set[i][j] *= factors[i];
 		}
 	}
 
@@ -570,7 +564,7 @@ void SHBuild3(SHData *sh_data, float **data_set, int count, float percent)
 
 	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
-			data_set[i][j] *= factors27[i];
+			data_set[i][j] *= factors[i];
 		}
 	}
 
@@ -582,7 +576,7 @@ void SHCompress2(SHData *sh_data, float *source_data, float *compress_data)
 	float source_temp_data[12] = { 0.0f };
 
 	for (int i = 0; i < 12; i++) {
-		source_temp_data[i] = factors12[i] * source_data[i];
+		source_temp_data[i] = factors[i] * source_data[i];
 	}
 
 	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->n, sh_data->d, compress_data);
@@ -593,7 +587,7 @@ void SHUncompress2(SHData *sh_data, float *compress_data, float *source_data)
 	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->n, sh_data->d, source_data);
 
 	for (int i = 0; i < 12; i++) {
-		source_data[i] /= factors12[i];
+		source_data[i] /= factors[i];
 	}
 }
 
@@ -602,7 +596,7 @@ void SHCompress3(SHData *sh_data, float *source_data, float *compress_data)
 	float source_temp_data[27] = { 0.0f };
 
 	for (int i = 0; i < 27; i++) {
-		source_temp_data[i] = factors27[i] * source_data[i];
+		source_temp_data[i] = factors[i] * source_data[i];
 	}
 
 	compress(source_temp_data, sh_data->mean, sh_data->eigvec, sh_data->n, sh_data->d, compress_data);
@@ -613,6 +607,6 @@ void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
 	uncompress(sh_data->mean, sh_data->eigvec, compress_data, sh_data->n, sh_data->d, source_data);
 
 	for (int i = 0; i < 27; i++) {
-		source_data[i] /= factors27[i];
+		source_data[i] /= factors[i];
 	}
 }
