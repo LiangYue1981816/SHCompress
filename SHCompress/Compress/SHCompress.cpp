@@ -456,8 +456,8 @@ static void precompute_dataset(float **data_set, int n, int count)
 	float mean[27] = { 0.0f };
 	float avedev[27] = { 0.0f };
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < count; j++) {
+	for (int j = 0; j < count; j++) {
+		for (int i = 0; i < n; i++) {
 			mean[i] += data_set[i][j];
 		}
 	}
@@ -466,8 +466,8 @@ static void precompute_dataset(float **data_set, int n, int count)
 		mean[i] = mean[i] / count;
 	}
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < count; j++) {
+	for (int j = 0; j < count; j++) {
+		for (int i = 0; i < n; i++) {
 			avedev[i] += fabsf(data_set[i][j] - mean[i]);
 		}
 	}
