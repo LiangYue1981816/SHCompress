@@ -500,6 +500,44 @@ void SHFree(SHData *sh_data)
 	SHInit(sh_data);
 }
 
+void SHZero(SHData *sh_data)
+{
+	sh_data->d = 0;
+
+	if (sh_data->mean) {
+		for (int i = 0; i < sh_data->n; i++) {
+			sh_data->mean[i] = 0.0f;
+		}
+	}
+
+	if (sh_data->eigval) {
+		for (int i = 0; i < sh_data->n; i++) {
+			sh_data->eigval[i] = 0.0f;
+		}
+	}
+
+	if (sh_data->eigvec) {
+		for (int i = 0; i < sh_data->n; i++) {
+			for (int j = 0; j < sh_data->n; j++) {
+				sh_data->eigvec[i][j] = 0.0f;
+			}
+		}
+	}
+}
+
+void SHBuild2(SHData *sh_data, float **data_set, int count, int dim)
+{
+	sh_data->d = dim;
+
+	for (int i = 0; i < sh_data->n; i++) {
+		for (int j = 0; j < count; j++) {
+			data_set[i][j] *= factors12[i];
+		}
+	}
+
+	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->n);
+}
+
 void SHBuild2(SHData *sh_data, float **data_set, int count, float percent)
 {
 	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, &sh_data->d, percent);
@@ -507,6 +545,19 @@ void SHBuild2(SHData *sh_data, float **data_set, int count, float percent)
 	for (int i = 0; i < sh_data->n; i++) {
 		for (int j = 0; j < count; j++) {
 			data_set[i][j] *= factors12[i];
+		}
+	}
+
+	build(data_set, sh_data->n, count, sh_data->mean, sh_data->eigvec, sh_data->eigval, sh_data->n);
+}
+
+void SHBuild3(SHData *sh_data, float **data_set, int count, int dim)
+{
+	sh_data->d = dim;
+
+	for (int i = 0; i < sh_data->n; i++) {
+		for (int j = 0; j < count; j++) {
+			data_set[i][j] *= factors27[i];
 		}
 	}
 
