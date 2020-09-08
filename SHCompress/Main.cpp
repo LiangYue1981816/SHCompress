@@ -51,6 +51,7 @@ void Test12(const char* szDataFileName, float percent)
 	const int n = 4 * 3;
 	const int count = GetDataCount(szDataFileName) / 3;
 	float **data_set = (float **)AllocMatrix(n, count, sizeof(float));
+	float **compress_set = (float **)AllocMatrix(n, count, sizeof(float));
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
@@ -70,6 +71,7 @@ void Test12(const char* szDataFileName, float percent)
 	}
 	else {
 		FreeMatrix((void **)data_set);
+		FreeMatrix((void **)compress_set);
 		return;
 	}
 
@@ -93,6 +95,33 @@ void Test12(const char* szDataFileName, float percent)
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
 		for (int index = 0; index < count; index++) {
+			float sh_0[n] = { 0.0f };
+			float sh_1[n] = { 0.0f };
+			float compress[n] = { 0.0f };
+
+			for (int i = 0; i < 3; i++) {
+				float data[9] = { 0.0f };
+
+				for (int j = 0; j < 9; j++) {
+					fscanf(pFile, "%f", &data[j]);
+				}
+
+				for (int j = 0; j < 4; j++) {
+					sh_0[i * 4 + j] = data[j] / PI;
+				}
+			}
+
+			SHCompress2(&sh_data, sh_0, compress);
+
+			for (int i = 0; i < 12; i++) {
+				compress_set[i][index] = compress[i];
+			}
+		}
+		fclose(pFile);
+	}
+
+	if (FILE *pFile = fopen(szDataFileName, "rb")) {
+		for (int index = 0; index < count; index++) {
 			float sh_0[12] = { 0.0f };
 			float sh_1[12] = { 0.0f };
 			float compress[12] = { 0.0f };
@@ -109,7 +138,10 @@ void Test12(const char* szDataFileName, float percent)
 				}
 			}
 
-			SHCompress2(&sh_data, sh_0, compress);
+			for (int i = 0; i < 12; i++) {
+				compress[i] = compress_set[i][index];
+			}
+
 			SHUncompress2(&sh_data, compress, sh_1);
 
 			printf("Test12 %d/%d\n", index, count);
@@ -136,6 +168,7 @@ void Test12(const char* szDataFileName, float percent)
 
 	SHFree(&sh_data);
 	FreeMatrix((void **)data_set);
+	FreeMatrix((void **)compress_set);
 
 	return;
 }
