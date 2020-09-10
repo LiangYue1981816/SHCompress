@@ -33,3 +33,6 @@ extern void SHUncompress2(SHData *sh_data, float *compress_data, float *source_d
 
 extern void SHCompress3(SHData *sh_data, float *source_data, float *compress_data);
 extern void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data);
+
+extern void SHCompressFinal2(SHData *sh_data, float **compress_data_set, int count);
+extern void SHUncompressFinal2(SHData *sh_data, float *compress_data, float *source_data);

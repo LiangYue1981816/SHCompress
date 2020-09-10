@@ -1,4 +1,5 @@
 #include <math.h>
+#include <float.h>
 #include "SHCompress.h"
 
 
@@ -675,4 +676,53 @@ void SHUncompress3(SHData *sh_data, float *compress_data, float *source_data)
 	for (int i = 0; i < 27; i++) {
 		source_data[i] /= factors[i];
 	}
+}
+
+void SHCompressFinal2(SHData *sh_data, float **compress_data_set, int count)
+{
+	precompute_dataset(compress_data_set, sh_data->d, count);
+
+	for (int i = 0; i < 12; i++) {
+		sh_data->add[i] = 0.0f;
+		sh_data->scale[i] = -FLT_MAX;
+	}
+
+	for (int j = 0; j < count; j++) {
+		for (int i = 0; i < sh_data->d; i++) {
+			sh_data->add[i] += compress_data_set[i][j];
+		}
+	}
+
+	for (int i = 0; i < sh_data->d; i++) {
+		sh_data->add[i] = sh_data->add[i] / count;
+	}
+
+	for (int j = 0; j < count; j++) {
+		for (int i = 0; i < sh_data->d; i++) {
+			if (sh_data->scale[i] < fabsf(compress_data_set[i][j])) {
+				sh_data->scale[i] = fabsf(compress_data_set[i][j]);
+			}
+		}
+	}
+
+	for (int j = 0; j < count; j++) {
+		for (int i = 0; i < sh_data->d; i++) {
+			float data = compress_data_set[i][j];
+			data = data - sh_data->add[i];
+			data = data / sh_data->scale[i];
+			compress_data_set[i][j] = data;
+		}
+	}
+}
+
+void SHUncompressFinal2(SHData *sh_data, float *compress_data, float *source_data)
+{
+	for (int i = 0; i < sh_data->d; i++) {
+		float data = compress_data[i];
+		data = data * sh_data->scale[i];
+		data = data + sh_data->add[i];
+		compress_data[i] = data;
+	}
+
+	SHUncompress2(sh_data, compress_data, source_data);
 }

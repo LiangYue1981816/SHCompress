@@ -119,6 +119,8 @@ void Test12(const char* szDataFileName, float percent)
 			}
 		}
 		fclose(pFile);
+
+		SHCompressFinal2(&sh_data, compress_set, count);
 	}
 
 	if (FILE *pFile = fopen(szDataFileName, "rb")) {
@@ -143,7 +145,7 @@ void Test12(const char* szDataFileName, float percent)
 				compress[i] = compress_set[i][index];
 			}
 
-			SHUncompress2(&sh_data, compress, sh_1);
+			SHUncompressFinal2(&sh_data, compress, sh_1);
 
 			printf("Test12 %d/%d\n", index, count);
 
