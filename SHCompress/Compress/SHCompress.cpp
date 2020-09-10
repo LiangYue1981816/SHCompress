@@ -500,6 +500,8 @@ void SHInit(SHData *sh_data)
 {
 	sh_data->d = 0;
 	sh_data->n = 0;
+	sh_data->add = NULL;
+	sh_data->scale = NULL;
 	sh_data->mean = NULL;
 	sh_data->eigval = NULL;
 	sh_data->eigvec = NULL;
@@ -508,6 +510,8 @@ void SHInit(SHData *sh_data)
 void SHAlloc2(SHData *sh_data)
 {
 	sh_data->n = 12;
+	sh_data->add = (float *)malloc(sh_data->n * sizeof(float));
+	sh_data->scale = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->mean = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigval = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
@@ -516,6 +520,8 @@ void SHAlloc2(SHData *sh_data)
 void SHAlloc3(SHData *sh_data)
 {
 	sh_data->n = 27;
+	sh_data->add = (float *)malloc(sh_data->n * sizeof(float));
+	sh_data->scale = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->mean = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigval = (float *)malloc(sh_data->n * sizeof(float));
 	sh_data->eigvec = (float **)alloc_matrix(sh_data->n, sh_data->n, sizeof(float));
@@ -523,6 +529,14 @@ void SHAlloc3(SHData *sh_data)
 
 void SHFree(SHData *sh_data)
 {
+	if (sh_data->add) {
+		free(sh_data->add);
+	}
+
+	if (sh_data->scale) {
+		free(sh_data->scale);
+	}
+
 	if (sh_data->mean) {
 		free(sh_data->mean);
 	}

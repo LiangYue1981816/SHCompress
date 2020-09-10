@@ -6,6 +6,8 @@
 typedef struct SHData {
 	int d;
 	int n;
+	float *add;
+	float *scale;
 	float *mean;
 	float *eigval;
 	float **eigvec;
